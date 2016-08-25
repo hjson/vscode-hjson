@@ -1,0 +1,26 @@
+{
+  "name": "hjson",
+  "displayName": "Hjson",
+  "description": "Hjson language syntax support",
+  "version": "0.1.0",
+  "publisher": "laktak",
+  "engines": {
+    "vscode": "^1.0.0"
+  },
+  "categories": [
+    "Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "hjson",
+      "aliases": ["Hjson", "hjson"],
+      "extensions": [".hjson"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "hjson",
+      "scopeName": "source.hjson",
+      "path": "./syntaxes/hjson.tmLanguage"
+    }]
+  }
+}
