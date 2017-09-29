@@ -20,7 +20,7 @@
     "grammars": [{
       "language": "hjson",
       "scopeName": "source.hjson",
-      "path": "./syntaxes/hjson.tmLanguage"
+      "path": "./syntaxes/Hjson.tmLanguage"
     }]
   }
 }
