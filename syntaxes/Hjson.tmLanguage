@@ -8,27 +8,27 @@
   </array>
   <key>foldingStartMarker</key>
   <string>(?x:     # turn on extended mode
-              ^    # a line beginning with
-              \s*    # some optional space
-              [{\[]  # the start of an object or array
-              (?!    # but not followed by
-              .*   # whatever
-              [}\]]  # and the close of an object or array
-              ,?   # an optional comma
-              \s*  # some optional space
-              $    # at the end of the line
-              )
-              |    # ...or...
-              [{\[]  # the start of an object or array
-              \s*    # some optional space
-              $    # at the end of the line
-            )</string>
+  ^    # a line beginning with
+  \s*    # some optional space
+  [{\[]  # the start of an object or array
+  (?!    # but not followed by
+  .*   # whatever
+  [}\]]  # and the close of an object or array
+  ,?   # an optional comma
+  \s*  # some optional space
+  $    # at the end of the line
+  )
+  |    # ...or...
+  [{\[]  # the start of an object or array
+  \s*    # some optional space
+  $    # at the end of the line
+)</string>
   <key>foldingStopMarker</key>
   <string>(?x:   # turn on extended mode
-             ^    # a line beginning with
-             \s*  # some optional space
-             [}\]]  # and the close of an object or array
-             )</string>
+  ^    # a line beginning with
+  \s*  # some optional space
+  [}\]]  # and the close of an object or array
+)</string>
   <key>keyEquivalent</key>
   <string>^~J</string>
   <key>name</key>
@@ -41,11 +41,13 @@
     </dict>
     <dict>
       <key>include</key>
-      <string>#rootObject</string>
+      <string>#value</string>
     </dict>
     <dict>
-      <key>include</key>
-      <string>#value</string>
+      <key>match</key>
+      <string>[^\s]+</string>
+      <key>name</key>
+      <string>invalid.illegal.excess-characters.hjson</string>
     </dict>
   </array>
   <key>repository</key>
@@ -63,13 +65,18 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>\]</string>
+      <string>(\])(?:\s*([^,\s].*)$)?</string>
       <key>endCaptures</key>
       <dict>
-        <key>0</key>
+        <key>1</key>
         <dict>
           <key>name</key>
           <string>punctuation.definition.array.end.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.value.hjson</string>
         </dict>
       </dict>
       <key>name</key>
@@ -78,15 +85,109 @@
       <array>
         <dict>
           <key>include</key>
-          <string>#value</string>
+          <string>#arrayContent</string>
         </dict>
+      </array>
+    </dict>
+    <key>arrayArray</key>
+    <dict>
+      <key>begin</key>
+      <string>\[</string>
+      <key>beginCaptures</key>
+      <dict>
+        <key>0</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.definition.array.begin.hjson</string>
+        </dict>
+      </dict>
+      <key>end</key>
+      <string>(\])(?:\s*([^,\s\]].*)$)?</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.definition.array.end.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.value.hjson</string>
+        </dict>
+      </dict>
+      <key>name</key>
+      <string>meta.structure.array.hjson</string>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#arrayContent</string>
+        </dict>
+      </array>
+    </dict>
+    <key>arrayConstant</key>
+    <dict>
+      <key>captures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>constant.language.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.separator.array.after-const.hjson</string>
+        </dict>
+      </dict>
+      <key>match</key>
+      <string>\b(true|false|null)(?:[\t ]*(?=,)|[\t ]*(?:(,)[\t ]*)?(?=$|#|/\*|//|\]))</string>
+    </dict>
+    <key>arrayContent</key>
+    <dict>
+      <key>name</key>
+      <string>meta.structure.array.hjson</string>
+      <key>patterns</key>
+      <array>
         <dict>
           <key>include</key>
           <string>#comments</string>
         </dict>
         <dict>
+          <key>include</key>
+          <string>#arrayValue</string>
+        </dict>
+        <dict>
+          <key>begin</key>
+          <string>(?&lt;=\[)|,</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.separator.dictionary.pair.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>(?=[^\s,/#])|(?=/[^/*])</string>
+          <key>patterns</key>
+          <array>
+            <dict>
+              <key>include</key>
+              <string>#comments</string>
+            </dict>
+            <dict>
+              <key>match</key>
+              <string>,</string>
+              <key>name</key>
+              <string>invalid.illegal.extra-comma.hjson</string>
+            </dict>
+          </array>
+        </dict>
+        <dict>
           <key>match</key>
-          <string>(,)|($)</string>
+          <string>,</string>
           <key>name</key>
           <string>punctuation.separator.array.hjson</string>
         </dict>
@@ -95,6 +196,213 @@
           <string>[^\s\]]</string>
           <key>name</key>
           <string>invalid.illegal.expected-array-separator.hjson</string>
+        </dict>
+      </array>
+    </dict>
+    <key>arrayJstring</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>begin</key>
+          <string>"</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>0</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.begin.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>(")(?:\s*((?:[^,\s\]#/]|/[^/*]).*)$)?</string>
+          <key>endCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.end.hjson</string>
+            </dict>
+            <key>2</key>
+            <dict>
+              <key>name</key>
+              <string>invalid.illegal.value.hjson</string>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>string.quoted.double.hjson</string>
+          <key>patterns</key>
+          <array>
+            <dict>
+              <key>include</key>
+              <string>#jstringDoubleContent</string>
+            </dict>
+          </array>
+        </dict>
+        <dict>
+          <key>begin</key>
+          <string>'</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>0</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.begin.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>(')(?:\s*((?:[^,\s\]#/]|/[^/*]).*)$)?</string>
+          <key>endCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.end.hjson</string>
+            </dict>
+            <key>2</key>
+            <dict>
+              <key>name</key>
+              <string>invalid.illegal.value.hjson</string>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>string.quoted.single.hjson</string>
+          <key>patterns</key>
+          <array>
+            <dict>
+              <key>include</key>
+              <string>#jstringSingleContent</string>
+            </dict>
+          </array>
+        </dict>
+      </array>
+    </dict>
+    <key>arrayMstring</key>
+    <dict>
+      <key>begin</key>
+      <string>'''</string>
+      <key>beginCaptures</key>
+      <dict>
+        <key>0</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.definition.string.begin.hjson</string>
+        </dict>
+      </dict>
+      <key>end</key>
+      <string>(''')(?:\s*((?:[^,\s\]#/]|/[^/*]).*)$)?</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.definition.string.end.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.value.hjson</string>
+        </dict>
+      </dict>
+      <key>name</key>
+      <string>string.quoted.multiline.hjson</string>
+    </dict>
+    <key>arrayNumber</key>
+    <dict>
+      <key>captures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>constant.numeric.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.separator.array.after-num.hjson</string>
+        </dict>
+      </dict>
+      <key>match</key>
+      <string>(-?(?:0|(?:[1-9]\d*))(?:\.\d+)?(?:[eE][+-]?\d+)?)(?:[\t ]*(?=,)|[\t ]*(?:(,)[\t ]*)?(?=$|#|/\*|//|\]))</string>
+    </dict>
+    <key>arrayObject</key>
+    <dict>
+      <key>begin</key>
+      <string>\{</string>
+      <key>beginCaptures</key>
+      <dict>
+        <key>0</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.definition.dictionary.begin.hjson</string>
+        </dict>
+      </dict>
+      <key>end</key>
+      <string>(\}|(?&lt;=\}))(?:\s*([^,\s\]].*)$)?</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.definition.dictionary.end.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.value.hjson</string>
+        </dict>
+      </dict>
+      <key>name</key>
+      <string>meta.structure.dictionary.hjson</string>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#objectContent</string>
+        </dict>
+      </array>
+    </dict>
+    <key>arrayString</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#arrayMstring</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#arrayJstring</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#ustring</string>
+        </dict>
+      </array>
+    </dict>
+    <key>arrayValue</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#arrayNumber</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#arrayConstant</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#arrayString</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#arrayObject</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#arrayArray</string>
         </dict>
       </array>
     </dict>
@@ -112,25 +420,9 @@
             </dict>
           </dict>
           <key>match</key>
-          <string>(#).*$\n?</string>
+          <string>^\s*(#).*(?:\n)?</string>
           <key>name</key>
           <string>comment.line.hash</string>
-        </dict>
-        <dict>
-          <key>begin</key>
-          <string>/\*</string>
-          <key>captures</key>
-          <dict>
-            <key>0</key>
-            <dict>
-              <key>name</key>
-              <string>punctuation.definition.comment.hjson</string>
-            </dict>
-          </dict>
-          <key>end</key>
-          <string>\*/</string>
-          <key>name</key>
-          <string>comment.block</string>
         </dict>
         <dict>
           <key>captures</key>
@@ -142,25 +434,495 @@
             </dict>
           </dict>
           <key>match</key>
-          <string>(//).*$\n?</string>
+          <string>^\s*(//).*(?:\n)?</string>
           <key>name</key>
           <string>comment.line.double-slash</string>
+        </dict>
+        <dict>
+          <key>begin</key>
+          <string>^\s*/\*</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.comment.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>\*/(?:\s*\n)?</string>
+          <key>endCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.comment.hjson</string>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>comment.block.double-slash</string>
+        </dict>
+        <dict>
+          <key>captures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.comment.hjson</string>
+            </dict>
+          </dict>
+          <key>match</key>
+          <string>(#)[^\n]*</string>
+          <key>name</key>
+          <string>comment.line.hash</string>
+        </dict>
+        <dict>
+          <key>captures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.comment.hjson</string>
+            </dict>
+          </dict>
+          <key>match</key>
+          <string>(//)[^\n]*</string>
+          <key>name</key>
+          <string>comment.line.double-slash</string>
+        </dict>
+        <dict>
+          <key>begin</key>
+          <string>/\*</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.comment.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>\*/</string>
+          <key>endCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.comment.hjson</string>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>comment.block.double-slash</string>
         </dict>
       </array>
     </dict>
     <key>constant</key>
     <dict>
+      <key>captures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>constant.language.hjson</string>
+        </dict>
+      </dict>
       <key>match</key>
-      <string>\b(?:true|false|null)\b</string>
-      <key>name</key>
-      <string>constant.language.hjson</string>
+      <string>\b(true|false|null)[\t ]*(?=$|#|/\*|//|\])</string>
     </dict>
-    <key>keyname</key>
+    <key>jstring</key>
     <dict>
-      <key>match</key>
-      <string>(([^,\{\[\}\]\s]+)|"(?:[^"\\]|\\.)*")\s*(?=:)</string>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>begin</key>
+          <string>"</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>0</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.begin.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>(")(?:\s*((?:[^\s#/]|/[^/*]).*)$)?</string>
+          <key>endCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.end.hjson</string>
+            </dict>
+            <key>2</key>
+            <dict>
+              <key>name</key>
+              <string>invalid.illegal.value.hjson</string>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>string.quoted.double.hjson</string>
+          <key>patterns</key>
+          <array>
+            <dict>
+              <key>include</key>
+              <string>#jstringDoubleContent</string>
+            </dict>
+          </array>
+        </dict>
+        <dict>
+          <key>begin</key>
+          <string>'</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>0</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.begin.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>(')(?:\s*((?:[^\s#/]|/[^/*]).*)$)?</string>
+          <key>endCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.end.hjson</string>
+            </dict>
+            <key>2</key>
+            <dict>
+              <key>name</key>
+              <string>invalid.illegal.value.hjson</string>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>string.quoted.single.hjson</string>
+          <key>patterns</key>
+          <array>
+            <dict>
+              <key>include</key>
+              <string>#jstringSingleContent</string>
+            </dict>
+          </array>
+        </dict>
+      </array>
+    </dict>
+    <key>jstringDoubleContent</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>match</key>
+          <string>\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})</string>
+          <key>name</key>
+          <string>constant.character.escape.hjson</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>\\.</string>
+          <key>name</key>
+          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>[^"]*[^\n\r"\\]$</string>
+          <key>name</key>
+          <string>invalid.illegal.string.hjson</string>
+        </dict>
+      </array>
+    </dict>
+    <key>jstringSingleContent</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>match</key>
+          <string>\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})</string>
+          <key>name</key>
+          <string>constant.character.escape.hjson</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>\\.</string>
+          <key>name</key>
+          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>[^']*[^\n\r'\\]$</string>
+          <key>name</key>
+          <string>invalid.illegal.string.hjson</string>
+        </dict>
+      </array>
+    </dict>
+    <key>keyNewline</key>
+    <dict>
+      <key>begin</key>
+      <string>(?x:
+  (
+    (?:[^:,\{\}\[\]\s"'][^:,\{\}\[\]\s]*) |
+    (?: # json string w/ '
+      '
+      (?:
+        [^\\'] | # anything but an escape character or quote
+        (\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})) | # escape characters
+        (\\.) # bad escape characters
+      )*
+      '
+    ) |
+    (?: # json string w/ "
+      "
+      (?:
+        [^\\"] | # anything but an escape character or quote
+        (\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})) | # escape characters
+        (\\.) # bad escape characters
+      )*
+      "
+    )
+  )
+  \s+ # capture the line ending
+)</string>
+      <key>beginCaptures</key>
+      <dict>
+        <key>0</key>
+        <dict>
+          <key>name</key>
+          <string>meta.structure.key-newline.begin.hjson</string>
+        </dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>string.quoted.keyname.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>constant.character.escape.hjson</string>
+        </dict>
+        <key>3</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
+        </dict>
+        <key>4</key>
+        <dict>
+          <key>name</key>
+          <string>constant.character.escape.hjson</string>
+        </dict>
+        <key>5</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
+        </dict>
+      </dict>
+      <key>end</key>
+      <string>^\s*:</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>0</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.separator.dictionary.key-value.hjson</string>
+        </dict>
+      </dict>
       <key>name</key>
-      <string>string.quoted.keyname.hjson</string>
+      <string>meta.structure.key-newline.hjson</string>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>match</key>
+          <string>\s+</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>[^\s]+</string>
+          <key>name</key>
+          <string>invalid.illegal.object-property.hjson</string>
+        </dict>
+      </array>
+    </dict>
+    <key>keyNewlineValue</key>
+    <dict>
+      <key>begin</key>
+      <string>(?&lt;=:)(?:\s*\n)?</string>
+      <key>end</key>
+      <string>(?&lt;!^)\n|(?=\})</string>
+      <key>name</key>
+      <string>meta.strucure.key-newline-value.hjson</string>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#comments</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>^\s+</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#objectValue</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>[^\s]+</string>
+          <key>name</key>
+          <string>invalid.illegal.object-property.hjson</string>
+        </dict>
+      </array>
+    </dict>
+    <key>keyValue</key>
+    <dict>
+      <key>begin</key>
+      <string>(?x:
+  (
+    (?:[^:,\{\}\[\]\s"'][^:,\{\}\[\]\s]*) |
+    (?: # json string w/ '
+      '
+      (?:
+        [^\\'] | # anything but an escape character or quote
+        (\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})) | # escape characters
+        (\\.) # bad escape characters
+      )*
+      '
+    ) |
+    (?: # json string w/ "
+      "
+      (?:
+        [^\\"] | # anything but an escape character or quote
+        (\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})) | # escape characters
+        (\\.) # bad escape characters
+      )*
+      "
+    )
+  )
+  \s*
+  (:)
+  \s* # capture the line ending if there is no value on the same line
+  (\})?
+)</string>
+      <key>beginCaptures</key>
+      <dict>
+        <key>0</key>
+        <dict>
+          <key>name</key>
+          <string>meta.structure.key-value.begin.hjson</string>
+        </dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>string.quoted.keyname.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>constant.character.escape.hjson</string>
+        </dict>
+        <key>3</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
+        </dict>
+        <key>4</key>
+        <dict>
+          <key>name</key>
+          <string>constant.character.escape.hjson</string>
+        </dict>
+        <key>5</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
+        </dict>
+        <key>6</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.separator.dictionary.key-value.hjson</string>
+        </dict>
+        <key>7</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.object-property.closing-bracket.hjson</string>
+        </dict>
+      </dict>
+      <key>end</key>
+      <string>(?&lt;!^)\n|(\})|(?&lt;=,)</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>meta.structure.key-value-value.end.hjson</string>
+        </dict>
+      </dict>
+      <key>name</key>
+      <string>meta.structure.key-value.hjson</string>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#comments</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#keyValueValue</string>
+        </dict>
+        <dict>
+          <key>captures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>invalid.illegal.object-property.closing-bracket.hjson</string>
+            </dict>
+          </dict>
+          <key>match</key>
+          <string>^\s*(\})</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>[^\s]+</string>
+          <key>name</key>
+          <string>invalid.illegal.object-property.hjson</string>
+        </dict>
+      </array>
+    </dict>
+    <key>keyValueValue</key>
+    <dict>
+      <key>begin</key>
+      <string>(?=[^}/#\s,])|(?=/[^/*])</string>
+      <key>end</key>
+      <string>(?&lt;!^)(?=\n)|(?=\})|(,)</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.separator.dictionary.pair.hjson</string>
+        </dict>
+      </dict>
+      <key>name</key>
+      <string>meta.structure.key-value-value.hjson</string>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#comments</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>^\s+</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#objectValue</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>[^\s]+</string>
+          <key>name</key>
+          <string>invalid.illegal.object-property.hjson</string>
+        </dict>
+      </array>
     </dict>
     <key>mstring</key>
     <dict>
@@ -175,13 +937,18 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>'''</string>
+      <string>(''')(?:\s*((?:[^\s#/]|/[^/*]).*)$)?</string>
       <key>endCaptures</key>
       <dict>
-        <key>0</key>
+        <key>1</key>
         <dict>
           <key>name</key>
           <string>punctuation.definition.string.end.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.value.hjson</string>
         </dict>
       </dict>
       <key>name</key>
@@ -189,31 +956,16 @@
     </dict>
     <key>number</key>
     <dict>
-      <key>comment</key>
-      <string>handles integer and decimal numbers</string>
+      <key>captures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>constant.numeric.hjson</string>
+        </dict>
+      </dict>
       <key>match</key>
-      <string>(?x:     # turn on extended mode
-             -?     # an optional minus
-             (?:
-               0    # a zero
-               |    # ...or...
-               [1-9]  # a 1-9 character
-               \d*    # followed by zero or more digits
-             )
-             (?:
-               (?:
-               \.   # a period
-               \d+  # followed by one or more digits
-               )?
-               (?:
-               [eE]   # an e character
-               [+-]?  # followed by an option +/-
-               \d+  # followed by one or more digits
-               )?     # make exponent optional
-             )?     # make decimal portion optional
-             )</string>
-      <key>name</key>
-      <string>constant.numeric.hjson</string>
+      <string>(-?(?:0|(?:[1-9]\d*))(?:\.\d+)?(?:[eE][+-]?\d+)?)[\t ]*(?=$|#|/\*|//|\])</string>
     </dict>
     <key>object</key>
     <dict>
@@ -227,16 +979,19 @@
           <string>punctuation.definition.dictionary.begin.hjson</string>
         </dict>
       </dict>
-      <key>comment</key>
-      <string>a JSON object</string>
       <key>end</key>
-      <string>\}</string>
+      <string>(\}|(?&lt;=\}))(?:\s*([^,\s].*)$)?</string>
       <key>endCaptures</key>
       <dict>
-        <key>0</key>
+        <key>1</key>
         <dict>
           <key>name</key>
           <string>punctuation.definition.dictionary.end.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.value.hjson</string>
         </dict>
       </dict>
       <key>name</key>
@@ -245,80 +1000,208 @@
       <array>
         <dict>
           <key>include</key>
-          <string>#keyname</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#value</string>
-        </dict>
-        <dict>
-          <key>match</key>
-          <string>:</string>
-          <key>name</key>
-          <string>punctuation.separator.dictionary.key-value.hjson</string>
-        </dict>
-        <dict>
-          <key>match</key>
-          <string>,</string>
-          <key>name</key>
-          <string>punctuation.separator.dictionary.pair.hjson</string>
+          <string>#objectContent</string>
         </dict>
       </array>
     </dict>
-    <key>rootObject</key>
+    <key>objectArray</key>
     <dict>
       <key>begin</key>
-      <string>(?=\s*(([^,\{\[\}\]\s]+)|"(?:[^"\\]|\\.)*")\s*:)</string>
+      <string>\[</string>
       <key>beginCaptures</key>
       <dict>
         <key>0</key>
         <dict>
           <key>name</key>
-          <string>punctuation.definition.dictionary.begin.hjson</string>
+          <string>punctuation.definition.array.begin.hjson</string>
         </dict>
       </dict>
-      <key>comment</key>
-      <string>a JSON object</string>
       <key>end</key>
-      <string>---none---</string>
+      <string>(\])(?:\s*([^,\s\}].*)$)?</string>
       <key>endCaptures</key>
       <dict>
-        <key>0</key>
+        <key>1</key>
         <dict>
           <key>name</key>
-          <string>punctuation.definition.dictionary.end.hjson</string>
+          <string>punctuation.definition.array.end.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.value.hjson</string>
         </dict>
       </dict>
       <key>name</key>
-      <string>meta.structure.dictionary.hjson</string>
+      <string>meta.structure.array.hjson</string>
       <key>patterns</key>
       <array>
         <dict>
           <key>include</key>
-          <string>#keyname</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#value</string>
-        </dict>
-        <dict>
-          <key>match</key>
-          <string>:</string>
-          <key>name</key>
-          <string>punctuation.separator.dictionary.key-value.hjson</string>
-        </dict>
-        <dict>
-          <key>match</key>
-          <string>,</string>
-          <key>name</key>
-          <string>punctuation.separator.dictionary.pair.hjson</string>
+          <string>#arrayContent</string>
         </dict>
       </array>
     </dict>
-    <key>string</key>
+    <key>objectConstant</key>
+    <dict>
+      <key>captures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>constant.language.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.separator.dictionary.pair.after-const.hjson</string>
+        </dict>
+      </dict>
+      <key>match</key>
+      <string>\b(true|false|null)(?:[\t ]*(?=,)|[\t ]*(?:(,)[\t ]*)?(?=$|#|/\*|//|\}))</string>
+    </dict>
+    <key>objectContent</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#comments</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#keyValue</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#keyNewline</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>:[.|\s]</string>
+          <key>name</key>
+          <string>invalid.illegal.object-property.hjson</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#keyNewlineValue</string>
+        </dict>
+        <dict>
+          <key>begin</key>
+          <string>(?&lt;=\{|,)|,</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.separator.dictionary.pair.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>(?=[^\s,/#])|(?=/[^/*])</string>
+          <key>patterns</key>
+          <array>
+            <dict>
+              <key>include</key>
+              <string>#comments</string>
+            </dict>
+            <dict>
+              <key>match</key>
+              <string>,</string>
+              <key>name</key>
+              <string>invalid.illegal.extra-comma.hjson</string>
+            </dict>
+          </array>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>[^\s]</string>
+          <key>name</key>
+          <string>invalid.illegal.object-property.hjson</string>
+        </dict>
+      </array>
+    </dict>
+    <key>objectJstring</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>begin</key>
+          <string>"</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>0</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.begin.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>(")(?:\s*((?:[^,\s\}#/]|/[^/*]).*)$)?</string>
+          <key>endCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.end.hjson</string>
+            </dict>
+            <key>2</key>
+            <dict>
+              <key>name</key>
+              <string>invalid.illegal.value.hjson</string>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>string.quoted.double.hjson</string>
+          <key>patterns</key>
+          <array>
+            <dict>
+              <key>include</key>
+              <string>#jstringDoubleContent</string>
+            </dict>
+          </array>
+        </dict>
+        <dict>
+          <key>begin</key>
+          <string>'</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>0</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.begin.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>(')(?:\s*((?:[^,\s\}#/]|/[^/*]).*)$)?</string>
+          <key>endCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.string.end.hjson</string>
+            </dict>
+            <key>2</key>
+            <dict>
+              <key>name</key>
+              <string>invalid.illegal.value.hjson</string>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>string.quoted.single.hjson</string>
+          <key>patterns</key>
+          <array>
+            <dict>
+              <key>include</key>
+              <string>#jstringSingleContent</string>
+            </dict>
+          </array>
+        </dict>
+      </array>
+    </dict>
+    <key>objectMstring</key>
     <dict>
       <key>begin</key>
-      <string>"</string>
+      <string>'''</string>
       <key>beginCaptures</key>
       <dict>
         <key>0</key>
@@ -328,61 +1211,158 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>"</string>
+      <string>(''')(?:\s*((?:[^,\s\}#/]|/[^/*]).*)$)?</string>
       <key>endCaptures</key>
       <dict>
-        <key>0</key>
+        <key>1</key>
         <dict>
           <key>name</key>
           <string>punctuation.definition.string.end.hjson</string>
         </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.value.hjson</string>
+        </dict>
       </dict>
       <key>name</key>
-      <string>string.quoted.double.hjson</string>
+      <string>string.quoted.multiline.hjson</string>
+    </dict>
+    <key>objectNumber</key>
+    <dict>
+      <key>captures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>constant.numeric.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.separator.dictionary.pair.after-num.hjson</string>
+        </dict>
+      </dict>
+      <key>match</key>
+      <string>(-?(?:0|(?:[1-9]\d*))(?:\.\d+)?(?:[eE][+-]?\d+)?)(?:[\t ]*(?=,)|[\t ]*(?:(,)[\t ]*)?(?=$|#|/\*|//|\}))</string>
+    </dict>
+    <key>objectObject</key>
+    <dict>
+      <key>begin</key>
+      <string>\{</string>
+      <key>beginCaptures</key>
+      <dict>
+        <key>0</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.definition.dictionary.begin.hjson</string>
+        </dict>
+      </dict>
+      <key>end</key>
+      <string>(\}|(?&lt;=\})\}?)(?:\s*([^,\s}].*)$)?</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.definition.dictionary.end.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.value.hjson</string>
+        </dict>
+      </dict>
+      <key>name</key>
+      <string>meta.structure.dictionary.hjson</string>
       <key>patterns</key>
       <array>
         <dict>
-          <key>match</key>
-          <string>(?x:        # turn on extended mode
-           \\        # a literal backslash
-           (?:         # ...followed by...
-             ["\\/bfnrt]   # one of these characters
-             |         # ...or...
-             u         # a u
-             [0-9a-fA-F]{4}  # and four hex digits
-           )
-           )</string>
-          <key>name</key>
-          <string>constant.character.escape.hjson</string>
+          <key>include</key>
+          <string>#objectContent</string>
+        </dict>
+      </array>
+    </dict>
+    <key>objectString</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#objectMstring</string>
         </dict>
         <dict>
-          <key>match</key>
-          <string>\\.</string>
-          <key>name</key>
-          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
+          <key>include</key>
+          <string>#objectJstring</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#ustring</string>
+        </dict>
+      </array>
+    </dict>
+    <key>objectValue</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#objectNumber</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#objectConstant</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#objectString</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#objectObject</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#objectArray</string>
+        </dict>
+      </array>
+    </dict>
+    <key>string</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#mstring</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#jstring</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#ustring</string>
         </dict>
       </array>
     </dict>
     <key>ustring</key>
     <dict>
       <key>match</key>
-      <string>\b([^:,0-9\-\{\[\}\]\s].*)$</string>
+      <string>([^:,\{\[\}\]\s].*)$</string>
       <key>name</key>
       <string>string.quoted.none.hjson</string>
     </dict>
     <key>value</key>
     <dict>
-      <key>comment</key>
-      <string>the 'value' diagram at http://json.org</string>
       <key>patterns</key>
       <array>
         <dict>
           <key>include</key>
-          <string>#constant</string>
+          <string>#number</string>
         </dict>
         <dict>
           <key>include</key>
-          <string>#number</string>
+          <string>#constant</string>
         </dict>
         <dict>
           <key>include</key>
@@ -390,23 +1370,11 @@
         </dict>
         <dict>
           <key>include</key>
-          <string>#array</string>
-        </dict>
-        <dict>
-          <key>include</key>
           <string>#object</string>
         </dict>
         <dict>
           <key>include</key>
-          <string>#comments</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#mstring</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#ustring</string>
+          <string>#array</string>
         </dict>
       </array>
     </dict>
