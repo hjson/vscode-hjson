@@ -692,7 +692,7 @@
         <key>1</key>
         <dict>
           <key>name</key>
-          <string>string.quoted.keyname.hjson</string>
+          <string>support.type.property-name.hjson</string>
         </dict>
         <key>2</key>
         <dict>
@@ -811,7 +811,7 @@
         <key>1</key>
         <dict>
           <key>name</key>
-          <string>string.quoted.keyname.hjson</string>
+          <string>support.type.property-name.hjson</string>
         </dict>
         <key>2</key>
         <dict>
