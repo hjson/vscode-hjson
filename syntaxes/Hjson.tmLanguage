@@ -659,62 +659,8 @@
     <dict>
       <key>begin</key>
       <string>(?x:
-  (
-    (?:[^:,\{\}\[\]\s"'][^:,\{\}\[\]\s]*) |
-    (?: # json string w/ '
-      '
-      (?:
-        [^\\'] | # anything but an escape character or quote
-        (\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})) | # escape characters
-        (\\.) # bad escape characters
-      )*
-      '
-    ) |
-    (?: # json string w/ "
-      "
-      (?:
-        [^\\"] | # anything but an escape character or quote
-        (\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})) | # escape characters
-        (\\.) # bad escape characters
-      )*
-      "
-    )
-  )
   \s+ # capture the line ending
 )</string>
-      <key>beginCaptures</key>
-      <dict>
-        <key>0</key>
-        <dict>
-          <key>name</key>
-          <string>meta.structure.key-newline.begin.hjson</string>
-        </dict>
-        <key>1</key>
-        <dict>
-          <key>name</key>
-          <string>support.type.property-name.hjson</string>
-        </dict>
-        <key>2</key>
-        <dict>
-          <key>name</key>
-          <string>constant.character.escape.hjson</string>
-        </dict>
-        <key>3</key>
-        <dict>
-          <key>name</key>
-          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
-        </dict>
-        <key>4</key>
-        <dict>
-          <key>name</key>
-          <string>constant.character.escape.hjson</string>
-        </dict>
-        <key>5</key>
-        <dict>
-          <key>name</key>
-          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
-        </dict>
-      </dict>
       <key>end</key>
       <string>^\s*:</string>
       <key>endCaptures</key>
@@ -746,7 +692,20 @@
       <key>begin</key>
       <string>(?&lt;=:)(?:\s*\n)?</string>
       <key>end</key>
-      <string>(?&lt;!^)\n|(?=\})</string>
+      <string>(?&lt;!^)\s*(?=\n)|(\})|(,)</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>meta.structure.key-value-value.end.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.separator.dictionary.pair.hjson</string>
+        </dict>
+      </dict>
       <key>name</key>
       <string>meta.strucure.key-newline-value.hjson</string>
       <key>patterns</key>
@@ -771,7 +730,7 @@
         </dict>
       </array>
     </dict>
-    <key>keyValue</key>
+    <key>key</key>
     <dict>
       <key>begin</key>
       <string>(?x:
@@ -797,9 +756,7 @@
     )
   )
   \s*
-  (:)
-  \s* # capture the line ending if there is no value on the same line
-  (\})?
+  (?!\n)
 )</string>
       <key>beginCaptures</key>
       <dict>
@@ -836,47 +793,24 @@
         <key>6</key>
         <dict>
           <key>name</key>
-          <string>punctuation.separator.dictionary.key-value.hjson</string>
-        </dict>
-        <key>7</key>
-        <dict>
-          <key>name</key>
-          <string>invalid.illegal.object-property.closing-bracket.hjson</string>
+          <string>invalid.illegal.separator.hjson</string>
         </dict>
       </dict>
       <key>end</key>
-      <string>(?&lt;!^)\n|(\})|(?&lt;=,)</string>
-      <key>endCaptures</key>
-      <dict>
-        <key>1</key>
-        <dict>
-          <key>name</key>
-          <string>meta.structure.key-value-value.end.hjson</string>
-        </dict>
-      </dict>
-      <key>name</key>
-      <string>meta.structure.key-value.hjson</string>
+      <string>(?&lt;!^|:)\s*\n|</string>
       <key>patterns</key>
       <array>
         <dict>
           <key>include</key>
-          <string>#comments</string>
+          <string>#keyValue</string>
         </dict>
         <dict>
           <key>include</key>
-          <string>#keyValueValue</string>
+          <string>#keyNewlineValue</string>
         </dict>
         <dict>
-          <key>captures</key>
-          <dict>
-            <key>1</key>
-            <dict>
-              <key>name</key>
-              <string>invalid.illegal.object-property.closing-bracket.hjson</string>
-            </dict>
-          </dict>
-          <key>match</key>
-          <string>^\s*(\})</string>
+          <key>include</key>
+          <string>#keyNewline</string>
         </dict>
         <dict>
           <key>match</key>
@@ -886,22 +820,45 @@
         </dict>
       </array>
     </dict>
-    <key>keyValueValue</key>
+    <key>keyValue</key>
     <dict>
       <key>begin</key>
-      <string>(?=[^}/#\s,])|(?=/[^/*])</string>
+      <string>(?x:
+  \s*
+  (:)
+  \s* # capture the line ending if there is no value on the same line
+  (\})?
+)</string>
+      <key>beginCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.separator.dictionary.key-value.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.object-property.closing-bracket.hjson</string>
+        </dict>
+      </dict>
       <key>end</key>
-      <string>(?&lt;!^)(?=\n)|(?=\})|(,)</string>
+      <string>(?&lt;!^)\s*(?=\n)|(?=\})|(,)</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>meta.structure.key-value.end.hjson</string>
+        </dict>
+        <key>2</key>
         <dict>
           <key>name</key>
           <string>punctuation.separator.dictionary.pair.hjson</string>
         </dict>
       </dict>
       <key>name</key>
-      <string>meta.structure.key-value-value.hjson</string>
+      <string>meta.structure.key-value.hjson</string>
       <key>patterns</key>
       <array>
         <dict>
@@ -915,6 +872,18 @@
         <dict>
           <key>include</key>
           <string>#objectValue</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>^\s*(\})</string>
+          <key>captures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>invalid.illegal.object-property.closing-bracket.hjson</string>
+            </dict>
+          </dict>
         </dict>
         <dict>
           <key>match</key>
@@ -1069,21 +1038,13 @@
         </dict>
         <dict>
           <key>include</key>
-          <string>#keyValue</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#keyNewline</string>
+          <string>#key</string>
         </dict>
         <dict>
           <key>match</key>
           <string>:[.|\s]</string>
           <key>name</key>
           <string>invalid.illegal.object-property.hjson</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#keyNewlineValue</string>
         </dict>
         <dict>
           <key>begin</key>
