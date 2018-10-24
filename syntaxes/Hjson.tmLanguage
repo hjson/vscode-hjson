@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
   <key>fileTypes</key>
@@ -8,27 +8,27 @@
   </array>
   <key>foldingStartMarker</key>
   <string>(?x:     # turn on extended mode
-  ^    # a line beginning with
-  \s*    # some optional space
-  [{\[]  # the start of an object or array
-  (?!    # but not followed by
-  .*   # whatever
-  [}\]]  # and the close of an object or array
-  ,?   # an optional comma
-  \s*  # some optional space
-  $    # at the end of the line
-  )
-  |    # ...or...
-  [{\[]  # the start of an object or array
-  \s*    # some optional space
-  $    # at the end of the line
-)</string>
+    ^    # a line beginning with
+    \s*    # some optional space
+    [{\[]  # the start of an object or array
+    (?!    # but not followed by
+    .*   # whatever
+    [}\]]  # and the close of an object or array
+    ,?   # an optional comma
+    \s*  # some optional space
+    $    # at the end of the line
+    )
+    |    # ...or...
+    [{\[]  # the start of an object or array
+    \s*    # some optional space
+    $    # at the end of the line
+  )</string>
   <key>foldingStopMarker</key>
   <string>(?x:   # turn on extended mode
-  ^    # a line beginning with
-  \s*  # some optional space
-  [}\]]  # and the close of an object or array
-)</string>
+    ^    # a line beginning with
+    \s*  # some optional space
+    [}\]]  # and the close of an object or array
+  )</string>
   <key>keyEquivalent</key>
   <string>^~J</string>
   <key>name</key>
@@ -655,12 +655,102 @@
         </dict>
       </array>
     </dict>
+    <key>key</key>
+    <dict>
+      <key>begin</key>
+      <string>(?x:
+        (
+          (?:[^:,\{\}\[\]\s"'][^:,\{\}\[\]\s]*) |
+          (?: # json string w/ '
+            '
+            (?:
+              [^\\'] | # anything but an escape character or quote
+              (\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})) | # escape characters
+              (\\.) # bad escape characters
+            )*
+            '
+          ) |
+          (?: # json string w/ "
+            "
+            (?:
+              [^\\"] | # anything but an escape character or quote
+              (\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})) | # escape characters
+              (\\.) # bad escape characters
+            )*
+            "
+          )
+        )
+        \s*
+        (?!\n)
+      )</string>
+      <key>beginCaptures</key>
+      <dict>
+        <key>0</key>
+        <dict>
+          <key>name</key>
+          <string>meta.structure.key-value.begin.hjson</string>
+        </dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>support.type.property-name.hjson</string>
+        </dict>
+        <key>2</key>
+        <dict>
+          <key>name</key>
+          <string>constant.character.escape.hjson</string>
+        </dict>
+        <key>3</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
+        </dict>
+        <key>4</key>
+        <dict>
+          <key>name</key>
+          <string>constant.character.escape.hjson</string>
+        </dict>
+        <key>5</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
+        </dict>
+        <key>6</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.separator.hjson</string>
+        </dict>
+      </dict>
+      <key>end</key>
+      <string>(?&lt;!^|:)\s*\n</string>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>include</key>
+          <string>#keyValue</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#keyNewlineValue</string>
+        </dict>
+        <dict>
+          <key>include</key>
+          <string>#keyNewline</string>
+        </dict>
+        <dict>
+          <key>match</key>
+          <string>[^\s]+</string>
+          <key>name</key>
+          <string>invalid.illegal.object-property.hjson</string>
+        </dict>
+      </array>
+    </dict>
     <key>keyNewline</key>
     <dict>
       <key>begin</key>
       <string>(?x:
-  \s+ # capture the line ending
-)</string>
+        \s+ # capture the line ending
+      )</string>
       <key>end</key>
       <string>^\s*:</string>
       <key>endCaptures</key>
@@ -730,105 +820,15 @@
         </dict>
       </array>
     </dict>
-    <key>key</key>
-    <dict>
-      <key>begin</key>
-      <string>(?x:
-  (
-    (?:[^:,\{\}\[\]\s"'][^:,\{\}\[\]\s]*) |
-    (?: # json string w/ '
-      '
-      (?:
-        [^\\'] | # anything but an escape character or quote
-        (\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})) | # escape characters
-        (\\.) # bad escape characters
-      )*
-      '
-    ) |
-    (?: # json string w/ "
-      "
-      (?:
-        [^\\"] | # anything but an escape character or quote
-        (\\(?:["'\\\/bfnrt]|u[0-9a-fA-F]{4})) | # escape characters
-        (\\.) # bad escape characters
-      )*
-      "
-    )
-  )
-  \s*
-  (?!\n)
-)</string>
-      <key>beginCaptures</key>
-      <dict>
-        <key>0</key>
-        <dict>
-          <key>name</key>
-          <string>meta.structure.key-value.begin.hjson</string>
-        </dict>
-        <key>1</key>
-        <dict>
-          <key>name</key>
-          <string>support.type.property-name.hjson</string>
-        </dict>
-        <key>2</key>
-        <dict>
-          <key>name</key>
-          <string>constant.character.escape.hjson</string>
-        </dict>
-        <key>3</key>
-        <dict>
-          <key>name</key>
-          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
-        </dict>
-        <key>4</key>
-        <dict>
-          <key>name</key>
-          <string>constant.character.escape.hjson</string>
-        </dict>
-        <key>5</key>
-        <dict>
-          <key>name</key>
-          <string>invalid.illegal.unrecognized-string-escape.hjson</string>
-        </dict>
-        <key>6</key>
-        <dict>
-          <key>name</key>
-          <string>invalid.illegal.separator.hjson</string>
-        </dict>
-      </dict>
-      <key>end</key>
-      <string>(?&lt;!^|:)\s*\n|</string>
-      <key>patterns</key>
-      <array>
-        <dict>
-          <key>include</key>
-          <string>#keyValue</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#keyNewlineValue</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#keyNewline</string>
-        </dict>
-        <dict>
-          <key>match</key>
-          <string>[^\s]+</string>
-          <key>name</key>
-          <string>invalid.illegal.object-property.hjson</string>
-        </dict>
-      </array>
-    </dict>
     <key>keyValue</key>
     <dict>
       <key>begin</key>
       <string>(?x:
-  \s*
-  (:)
-  \s* # capture the line ending if there is no value on the same line
-  (\})?
-)</string>
+        \s*
+        (:)
+        \s* # capture the line ending if there is no value on the same line
+        (\})?
+      )</string>
       <key>beginCaptures</key>
       <dict>
         <key>1</key>
@@ -843,7 +843,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(?&lt;!^)\s*(?=\n)|(?=\})|(,)</string>
+      <string>(?&lt;!^)\s*(?=\n)|(\})|(,)</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -874,8 +874,6 @@
           <string>#objectValue</string>
         </dict>
         <dict>
-          <key>match</key>
-          <string>^\s*(\})</string>
           <key>captures</key>
           <dict>
             <key>1</key>
@@ -884,6 +882,8 @@
               <string>invalid.illegal.object-property.closing-bracket.hjson</string>
             </dict>
           </dict>
+          <key>match</key>
+          <string>^\s*(\})</string>
         </dict>
         <dict>
           <key>match</key>
@@ -1075,7 +1075,7 @@
         </dict>
         <dict>
           <key>match</key>
-          <string>[^\s]</string>
+          <string>[^\s]+</string>
           <key>name</key>
           <string>invalid.illegal.object-property.hjson</string>
         </dict>
