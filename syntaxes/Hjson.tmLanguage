@@ -516,6 +516,64 @@
         </dict>
       </array>
     </dict>
+    <key>commentsNewline</key>
+    <dict>
+      <key>patterns</key>
+      <array>
+        <dict>
+          <key>captures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.comment.hjson</string>
+            </dict>
+          </dict>
+          <key>match</key>
+          <string>(#).*\n</string>
+          <key>name</key>
+          <string>comment.line.hash</string>
+        </dict>
+        <dict>
+          <key>captures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.comment.hjson</string>
+            </dict>
+          </dict>
+          <key>match</key>
+          <string>(//).*\n</string>
+          <key>name</key>
+          <string>comment.line.double-slash</string>
+        </dict>
+        <dict>
+          <key>begin</key>
+          <string>/\*</string>
+          <key>beginCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.comment.hjson</string>
+            </dict>
+          </dict>
+          <key>end</key>
+          <string>\*/(\s*\n)?</string>
+          <key>endCaptures</key>
+          <dict>
+            <key>1</key>
+            <dict>
+              <key>name</key>
+              <string>punctuation.definition.comment.hjson</string>
+            </dict>
+          </dict>
+          <key>name</key>
+          <string>comment.block.double-slash</string>
+        </dict>
+      </array>
+    </dict>
     <key>constant</key>
     <dict>
       <key>captures</key>
@@ -727,90 +785,11 @@
       <array>
         <dict>
           <key>include</key>
+          <string>#commentsNewline</string>
+        </dict>
+        <dict>
+          <key>include</key>
           <string>#keyValue</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#keyNewlineValue</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#keyNewline</string>
-        </dict>
-        <dict>
-          <key>match</key>
-          <string>[^\s]+</string>
-          <key>name</key>
-          <string>invalid.illegal.object-property.hjson</string>
-        </dict>
-      </array>
-    </dict>
-    <key>keyNewline</key>
-    <dict>
-      <key>begin</key>
-      <string>(?x:
-        \s+ # capture the line ending
-      )</string>
-      <key>end</key>
-      <string>^\s*:</string>
-      <key>endCaptures</key>
-      <dict>
-        <key>0</key>
-        <dict>
-          <key>name</key>
-          <string>punctuation.separator.dictionary.key-value.hjson</string>
-        </dict>
-      </dict>
-      <key>name</key>
-      <string>meta.structure.key-newline.hjson</string>
-      <key>patterns</key>
-      <array>
-        <dict>
-          <key>match</key>
-          <string>\s+</string>
-        </dict>
-        <dict>
-          <key>match</key>
-          <string>[^\s]+</string>
-          <key>name</key>
-          <string>invalid.illegal.object-property.hjson</string>
-        </dict>
-      </array>
-    </dict>
-    <key>keyNewlineValue</key>
-    <dict>
-      <key>begin</key>
-      <string>(?&lt;=:)(?:\s*\n)?</string>
-      <key>end</key>
-      <string>(?&lt;!^)\s*(?=\n)|(\})|(,)</string>
-      <key>endCaptures</key>
-      <dict>
-        <key>1</key>
-        <dict>
-          <key>name</key>
-          <string>meta.structure.key-value-value.end.hjson</string>
-        </dict>
-        <key>2</key>
-        <dict>
-          <key>name</key>
-          <string>punctuation.separator.dictionary.pair.hjson</string>
-        </dict>
-      </dict>
-      <key>name</key>
-      <string>meta.strucure.key-newline-value.hjson</string>
-      <key>patterns</key>
-      <array>
-        <dict>
-          <key>include</key>
-          <string>#comments</string>
-        </dict>
-        <dict>
-          <key>match</key>
-          <string>^\s+</string>
-        </dict>
-        <dict>
-          <key>include</key>
-          <string>#objectValue</string>
         </dict>
         <dict>
           <key>match</key>
