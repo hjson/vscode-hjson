@@ -45,7 +45,7 @@
     </dict>
     <dict>
       <key>match</key>
-      <string>[^\s]+</string>
+      <string>[^\s]</string>
       <key>name</key>
       <string>invalid.illegal.excess-characters.hjson</string>
     </dict>
@@ -65,7 +65,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\])(?:\s*([^,\s].*)$)?</string>
+      <string>(\])(?:\s*([^,\s]+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -102,7 +102,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\])(?:\s*([^,\s\]].*)$)?</string>
+      <string>(\])(?:\s*([^,\s\]]+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -215,7 +215,7 @@
             </dict>
           </dict>
           <key>end</key>
-          <string>(")(?:\s*((?:[^,\s\]#/]|/[^/*]).*)$)?</string>
+          <string>(")(?:\s*((?:[^,\s\]#/]|/[^/*])+))?</string>
           <key>endCaptures</key>
           <dict>
             <key>1</key>
@@ -251,7 +251,7 @@
             </dict>
           </dict>
           <key>end</key>
-          <string>(')(?:\s*((?:[^,\s\]#/]|/[^/*]).*)$)?</string>
+          <string>(')(?:\s*((?:[^,\s\]#/]|/[^/*])+))?</string>
           <key>endCaptures</key>
           <dict>
             <key>1</key>
@@ -290,7 +290,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(''')(?:\s*((?:[^,\s\]#/]|/[^/*]).*)$)?</string>
+      <string>(''')(?:\s*((?:[^,\s\]#/]|/[^/*])+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -338,7 +338,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\}|(?&lt;=\}))(?:\s*([^,\s\]].*)$)?</string>
+      <string>(\}|(?&lt;=\}))(?:\s*([^,\s\]]+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -740,6 +740,7 @@
         )
         \s*
         (?!\n)
+        ([,\{\}\[\]]*)
       )</string>
       <key>beginCaptures</key>
       <dict>
@@ -778,9 +779,22 @@
           <key>name</key>
           <string>invalid.illegal.separator.hjson</string>
         </dict>
+        <key>7</key>
+        <dict>
+          <key>name</key>
+          <string>invalid.illegal.property-name.hjson</string>
+        </dict>
       </dict>
       <key>end</key>
-      <string>(?&lt;!^|:)\s*\n</string>
+      <string>(?&lt;!^|:)\s*\n|(?=})|(,)</string>
+      <key>endCaptures</key>
+      <dict>
+        <key>1</key>
+        <dict>
+          <key>name</key>
+          <string>punctuation.separator.dictionary.pair.hjson</string>
+        </dict>
+      </dict>
       <key>patterns</key>
       <array>
         <dict>
@@ -793,7 +807,7 @@
         </dict>
         <dict>
           <key>match</key>
-          <string>[^\s]+</string>
+          <string>[^\s]</string>
           <key>name</key>
           <string>invalid.illegal.object-property.hjson</string>
         </dict>
@@ -806,7 +820,7 @@
         \s*
         (:)
         \s* # capture the line ending if there is no value on the same line
-        (\})?
+        ([,\}\]]*)
       )</string>
       <key>beginCaptures</key>
       <dict>
@@ -818,24 +832,11 @@
         <key>2</key>
         <dict>
           <key>name</key>
-          <string>invalid.illegal.object-property.closing-bracket.hjson</string>
+          <string>invalid.illegal.object-property.hjson</string>
         </dict>
       </dict>
       <key>end</key>
-      <string>(?&lt;!^)\s*(?=\n)|(\})|(,)</string>
-      <key>endCaptures</key>
-      <dict>
-        <key>1</key>
-        <dict>
-          <key>name</key>
-          <string>meta.structure.key-value.end.hjson</string>
-        </dict>
-        <key>2</key>
-        <dict>
-          <key>name</key>
-          <string>punctuation.separator.dictionary.pair.hjson</string>
-        </dict>
-      </dict>
+      <string>(?&lt;!^)\s*(?=\n)|(?=[},])</string>
       <key>name</key>
       <string>meta.structure.key-value.hjson</string>
       <key>patterns</key>
@@ -866,7 +867,7 @@
         </dict>
         <dict>
           <key>match</key>
-          <string>[^\s]+</string>
+          <string>[^\s]</string>
           <key>name</key>
           <string>invalid.illegal.object-property.hjson</string>
         </dict>
@@ -928,7 +929,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\}|(?&lt;=\}))(?:\s*([^,\s].*)$)?</string>
+      <string>(\}|(?&lt;=\}))(?:\s*([^,\s]+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -965,7 +966,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\])(?:\s*([^,\s\}].*)$)?</string>
+      <string>(\])(?:\s*([^,\s\}]+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -1054,7 +1055,7 @@
         </dict>
         <dict>
           <key>match</key>
-          <string>[^\s]+</string>
+          <string>[^\s]</string>
           <key>name</key>
           <string>invalid.illegal.object-property.hjson</string>
         </dict>
@@ -1076,7 +1077,7 @@
             </dict>
           </dict>
           <key>end</key>
-          <string>(")(?:\s*((?:[^,\s\}#/]|/[^/*]).*)$)?</string>
+          <string>(")(?:\s*((?:[^,\s\}#/]|/[^/*])+))?</string>
           <key>endCaptures</key>
           <dict>
             <key>1</key>
@@ -1112,7 +1113,7 @@
             </dict>
           </dict>
           <key>end</key>
-          <string>(')(?:\s*((?:[^,\s\}#/]|/[^/*]).*)$)?</string>
+          <string>(')(?:\s*((?:[^,\s\}#/]|/[^/*])+))?</string>
           <key>endCaptures</key>
           <dict>
             <key>1</key>
@@ -1151,7 +1152,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(''')(?:\s*((?:[^,\s\}#/]|/[^/*]).*)$)?</string>
+      <string>(''')(?:\s*((?:[^,\s\}#/]|/[^/*])+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -1199,7 +1200,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\}|(?&lt;=\})\}?)(?:\s*([^,\s}].*)$)?</string>
+      <string>(\}|(?&lt;=\})\}?)(?:\s*([^,\s}]+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
