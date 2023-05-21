@@ -8,8 +8,9 @@
   "engines": {
     "vscode": "^1.0.0"
   },
+  "icon": "images/hjson-icon.png",
   "categories": [
-    "Languages"
+    "Programming Languages"
   ],
   "contributes": {
     "languages": [
