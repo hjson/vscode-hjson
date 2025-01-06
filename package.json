@@ -2,7 +2,7 @@
   "name": "hjson",
   "displayName": "Hjson",
   "description": "Hjson language syntax support",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "publisher": "laktak",
   "repository": "https://github.com/hjson/vscode-hjson",
   "engines": {
