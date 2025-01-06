@@ -55,7 +55,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\])(?:\s*([^,\s]+))?</string>
+      <string>(\])(?:\s*((?:[^,\s#/]|/[^/*])+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -92,7 +92,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\])(?:\s*([^,\s\]]+))?</string>
+      <string>(\])(?:\s*((?:[^,\s\]#/]|/[^/*])+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -328,7 +328,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\}|(?&lt;=\}))(?:\s*([^,\s\]]+))?</string>
+      <string>(\}|(?&lt;=\}))(?:\s*((?:[^,\s\]#/]|/[^/*])+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -919,7 +919,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\}|(?&lt;=\}))(?:\s*([^,\s]+))?</string>
+      <string>(\}|(?&lt;=\}))(?:\s*((?:[^,\s#/]|/[^/*])+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -956,7 +956,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\])(?:\s*([^,\s\}]+))?</string>
+      <string>(\])(?:\s*((?:[^,\s}#/]|/[^/*])+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
@@ -1190,7 +1190,7 @@
         </dict>
       </dict>
       <key>end</key>
-      <string>(\}|(?&lt;=\})\}?)(?:\s*([^,\s}]+))?</string>
+      <string>(\}|(?&lt;=\})\}?)(?:\s*((?:[^,\s}#/]|/[^/*])+))?</string>
       <key>endCaptures</key>
       <dict>
         <key>1</key>
